@@ -4,6 +4,11 @@
         <title>${name}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+        <style type="text/css">
+            span.tipme {
+                display: block;
+            }
+        </style>
     </head>
     <body>
         <div class="container">
@@ -11,34 +16,58 @@
                 <h1 class="text-center">${name} - Section ${section}</h1>
             </div>
             <div class="row">
+                <p class="text-center">Class Average: ${courseAverageGrade}%</p>
+            </div>
+            <div class="row">
                 <div class="col-md-12" id="grades">
                     <ul class="nav nav-tabs">
                         <#list categories as category>
-                        <li <#if category_index == 0>class="active"</#if>><a href="#${category.name}" data-toggle="tab">${category.name}</a></li>
+                        <li <#if category_index == 0>class="active"</#if>>
+                            <a href="#${category.name}" data-toggle="tab">
+                                <h4>${category.name}</h4>
+                                <p class="text-center">${category.totalPoints} points possible</p>
+                            </a>
+                        </li>
                         </#list>
                     </ul>
                     <div class="tab-content">
                         <#list categories as category>
-                            <div class="tab-pane <#if category_index == 0>active</#if>" id="${category.name}">
-                                <table class="table table-striped table-bordered table-condensed table-hover">
-                                    <thead>
-                                        <th>Student</th>
+                        <div class="tab-pane <#if category_index == 0>active</#if>" id="${category.name}">
+                            <table class="table table-striped table-bordered table-condensed table-hover">
+                                <thead>
+                                    <th>Student</th>
+                                    <#list category.assignments as assignment>
+                                    <th>${assignment.name} (${assignment.worth})</th>
+                                    </#list>
+                                    <th class="success">Total</th>
+                                </thead>
+                                <tbody>
+                                    <#list students as student>
+                                    <tr>
+                                        <td>${student.pseudoName}</td>
                                         <#list category.assignments as assignment>
-                                            <th>${assignment.name} (${assignment.worth})</th>
+                                        <td>
+                                            <span class="tipme" data-toggle="tooltip" title="${(assignment.getGrade(student.pseudoName) / assignment.worth) * 100}%">
+                                                ${assignment.getGrade(student.pseudoName)}
+                                            </span>
+                                        </td>
                                         </#list>
-                                    </thead>
-                                    <tbody>
-                                        <#list students as student>
-                                            <tr>
-                                                <td>${student.pseudoName}</td>
-                                                <#list category.assignments as assignment>
-                                                    <td>${assignment.getGrade(student.pseudoName)}</td>
-                                                </#list>
-                                            </tr>
+                                        <td class="success">${category.getCategoryTotalGradeForStudent(student.pseudoName)}</td>
+                                    </tr>
+                                    </#list>
+                                    <tr class="success">
+                                        <td>Average</td>
+                                        <#list category.assignments as assignment>
+                                        <td>
+                                            <span class="tipme" data-toggle="tooltip" title="${assignment.getAssignmentAverageGrade(students)}%">
+                                                ${assignment.getAssignmentAveragePoints(students)}
+                                            </span>
+                                        </td>
                                         </#list>
-                                    </tbody>
-                                </table>
-                            </div>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                         </#list>
                     </div>
                 </div>
@@ -46,5 +75,10 @@
         </div>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready( function() {
+                $('.tipme').tooltip();
+            });
+        </script>
     </body>
 </html>
