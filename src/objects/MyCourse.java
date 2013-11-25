@@ -29,7 +29,7 @@ public class MyCourse {
     private List<Student> students = new ArrayList<Student>();
     private List<AssignmentCategory> categories = new ArrayList<AssignmentCategory>();
     private List<GhostStudent> ghostStudents = new ArrayList<GhostStudent>();
-    //private final PseudoNameGenerator pnGenerator;
+    private final PseudoNameGenerator pnGenerator;
     private DecimalFormat decimalFormat = new DecimalFormat("#.#");
     private boolean isGradingWeighted;
     private boolean isNewCourse = false;
@@ -40,7 +40,7 @@ public class MyCourse {
      * @param   cn  string denoting what the callee has named the course
      */
     public MyCourse(String cn) {
-        //this.pnGenerator = new PseudoNameGenerator();
+        this.pnGenerator = new PseudoNameGenerator();
         courseName = cn;
     }
     
@@ -359,7 +359,7 @@ public class MyCourse {
     	if (!nameAvailable(fn, ln)) {
     		return false;
     	}
-        //students.add(new Student(fn, ln, pnGenerator.generateName()));
+        students.add(new Student(fn, ln, pnGenerator.generateName()));
         
         Random generator = new Random();
         int ghostAmount = generator.nextInt(5) + 5; //Random number between 5 and 10
@@ -463,7 +463,7 @@ public class MyCourse {
      * Constructs a new GhostStudent object and adds it into the fakeStudents ArrayList structure
      */
     public void addGhostStudent() {
-        //ghostStudents.add(new GhostStudent(pnGenerator.generateName()));
+        ghostStudents.add(new GhostStudent(pnGenerator.generateName()));
     }
     
     /**
